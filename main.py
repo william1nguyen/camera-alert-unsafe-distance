@@ -1,5 +1,5 @@
 import cv2
-import torch
+import argparse
 import numpy as np
 from errors import OpenCameraException
 from models.yolov8 import yolov8
@@ -82,7 +82,13 @@ def release(cap):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture("./tests/test1.mp4")
-    # cap = cv2.VideoCapture(0)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--test', dest='test', type=str, help='test destination')
+    args = parser.parse_args()
+
+    if args.test:
+        cap = cv2.VideoCapture(args.test)
+    else: 
+        cap = cv2.VideoCapture(0)
     start_webcam(cap=cap)
     release(cap=cap)

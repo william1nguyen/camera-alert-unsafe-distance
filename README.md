@@ -8,18 +8,23 @@
 
 ## How to run this project ?
 
+### Setup environment
+
 ```
 $ conda create -f environment.yml
 ```
 
-- With `MiDas Model` for depth estimation and pinhole camera model for calculating distance using focal length, real width, estimated width (pixel):
+### Run project
+
+- Run with camera
 
 ```
-$ python object_detect_z.py
+$ python main.py
 ```
 
-- Without `MiDas Model`:
+- Add video `mp4` file into `tests` folder.
+  E.g. tests/test1.mp4
 
 ```
-$ python object_detect.py
+$ python main.py --tests=tests/test1.mp4
 ```
