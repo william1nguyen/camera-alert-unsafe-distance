@@ -1,9 +1,9 @@
 import cv2
 import argparse
-import numpy as np
 from errors import OpenCameraException
 from models.yolov8 import yolov8
 from env import *
+from models.bounding_box import BoundingBox
 
 object_detech_model = yolov8
 
@@ -11,53 +11,18 @@ def predict(frame):
     results = object_detech_model.track(frame, stream=True)
     return results
 
-def calculate_distance(focal_length, real_object_width, pixel_width):
-    distance = (real_object_width * focal_length) / pixel_width
-    return distance
-
-def check_safe_distance(distance):
-    return distance > SAFE_DISTANCE_THRESHOLD
-
 def show_webcam_results(image, predicted_results, target_classes=[]):
+    bounding_boxes = []
     for r in predicted_results:
         for box in r.boxes:
             cls = int(box.cls[0])
-            confidence = box.conf[0]
 
             if cls in target_classes:
                 x1, y1, x2, y2 = box.xyxy[0]
                 x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-
-                distance = calculate_distance(
-                    DEFAULT_FOCAL_LENGTH,
-                    object_detech_model.object_height.get(cls),
-                    abs(x2 - x1)
-                )
-
-                is_safe = check_safe_distance(distance=distance)
-                if is_safe:
-                    bounding_color = SAFE_COLOR
-                else:
-                    bounding_color = UNSAFE_COLOR
-
-                cv2.rectangle(
-                    img=image,
-                    pt1=(x1, y1),
-                    pt2=(x2, y2),
-                    color=bounding_color,
-                    thickness=3
-                )
-                    
-                # Display depth on the image
-                cv2.putText(
-                    img=image,
-                    text=f"{object_detech_model.target_classes[cls]} - D:{distance:.2f}m",
-                    org=(x1, y1 - 10),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=0.9,
-                    color=bounding_color,
-                    thickness=2
-                )
+                bounding_box = BoundingBox(cls, x1, y1, x2, y2)
+                bounding_boxes.append(bounding_boxes)
+                bounding_box.draw(cv2=cv2, image=image)
 
     cv2.imshow('Webcam', image)
 

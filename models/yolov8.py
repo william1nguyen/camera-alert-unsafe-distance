@@ -33,5 +33,5 @@ class YoloV8(YOLO):
 
   def __init__(self, model="./data/weights/yolov8n.pt", task=None, verbose=False):
     super().__init__(model, task, verbose)
-  
+
 yolov8 = YoloV8()
