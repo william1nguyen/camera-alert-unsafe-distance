@@ -63,7 +63,7 @@ class BoundingBox(object):
         # Annotate the class name and distance
         cv2.putText(
             img=image,
-            text=f"{self.class_name} - D:{self.distance:.2f}m",
+            text=f"{yolov11.target_classes.get(self.class_name)} - D:{self.distance:.2f}m",
             org=(self.top_left.x, self.top_left.y - 10),
             fontFace=cv2.FONT_HERSHEY_SIMPLEX,
             fontScale=0.9,
