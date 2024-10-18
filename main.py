@@ -1,28 +1,51 @@
 import cv2
 import argparse
+import env
 from errors import OpenCameraException
-from models.yolov8 import yolov8
+from models.yolov11 import yolov11
 from env import *
 from models.bounding_box import BoundingBox
 
-object_detech_model = yolov8
+object_detech_model = yolov11
 
 def predict(frame):
     results = object_detech_model.track(frame, stream=True)
     return results
 
 def show_webcam_results(image, predicted_results, target_classes=[]):
+    """ Process and visualize predictions on the webcam feed """
     bounding_boxes = []
+    
     for r in predicted_results:
         for box in r.boxes:
             cls = int(box.cls[0])
 
             if cls in target_classes:
                 x1, y1, x2, y2 = box.xyxy[0]
+                confidence = box.conf[0]
+
+                if confidence < env.CONFIDENCE_THRESHOLD: 
+                    continue
+
                 x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
                 bounding_box = BoundingBox(cls, x1, y1, x2, y2)
-                bounding_boxes.append(bounding_boxes)
+                bounding_boxes.append(bounding_box)
                 bounding_box.draw(cv2=cv2, image=image)
+
+    if len(bounding_boxes) >= 2:
+        closest_box1, closest_box2 = bounding_boxes[0], bounding_boxes[1]
+        distance_between = closest_box1.calculate_real_distance_to(closest_box2)
+        
+        cv2.line(image, 
+                 (int(closest_box1.center[0]), int(closest_box1.center[1])), 
+                 (int(closest_box2.center[0]), int(closest_box2.center[1])), 
+                 (255, 0, 0), 2)
+        
+        mid_point = ((closest_box1.center[0] + closest_box2.center[0]) // 2, 
+                     (closest_box1.center[1] + closest_box2.center[1]) // 2)
+        cv2.putText(image, f"Distance: {distance_between:.2f}m", 
+                    (int(mid_point[0]), int(mid_point[1])), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
 
     cv2.imshow('Webcam', image)
 
