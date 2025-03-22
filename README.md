@@ -1,30 +1,56 @@
-# AUTO-PARKING SYSTEM
+# Camera Alert Unsafe Distance System
 
-## Abilities
+A computer vision system that detects objects, estimates their distance, and alerts when objects are at an unsafe proximity using YOLOv11 from Ultralytics.
 
-- Object detection.
-- Distance estimation.
-- Auto Find Parking area and show guideline for parking.
+## Features
 
-## How to run this project ?
+- Real-time object detection using Ultralytics YOLO
+- Accurate distance estimation
+- Configurable safety threshold alerts
+- Support for both live camera feed and video file input
 
-### Setup environment
+## Demo
 
+https://github.com/user-attachments/assets/85365a95-b41b-46b0-aadb-fc78aa8c20be
+
+## Installation
+
+### Setup Environment
+
+Create a conda environment using the provided configuration:
+
+```bash
+conda create -f environment.yml
 ```
-$ conda create -f environment.yml
+
+### Activate Environment
+
+```bash
+conda activate yolo
 ```
 
-### Run project
+## Usage
 
-- Run with camera
+### Run with Live Camera
 
-```
-$ python main.py
+To use your computer's camera for real-time detection:
+
+```bash
+python main.py
 ```
 
-- Add video `mp4` file into `tests` folder.
-  E.g. tests/test1.mp4
+### Run with Test Video
 
+Place test videos in the `tests` folder, then specify the file path:
+
+```bash
+python main.py --tests=tests/<TEST_VIDEO>
 ```
-$ python main.py --tests=tests/test1.mp4
-```
+
+## Requirements
+
+All dependencies are listed in the `environment.yml` file.
+
+## License
+
+[MIT License](LICENSE)
